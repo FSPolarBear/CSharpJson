@@ -1,0 +1,8 @@
+.vs
+TestResults
+Json/bin
+Json/obj
+JsonTest/bin
+JsonTest/obj
+desktop.ini
+*.bak
