@@ -8,7 +8,7 @@ namespace Json
 {
     /// <summary>
     /// Null item of json.
-    /// <para>2024.1.3</para>
+    /// <para>2024.1.4</para>
     /// <para>version 1.0.0</para>
     /// </summary>
     public class JsonNull : JsonItem

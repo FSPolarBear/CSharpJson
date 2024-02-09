@@ -1,5 +1,7 @@
 # CSharpJson
 This is a json library for C#. 
+## Version
+1.0.1
 ## Support
 .Net 6.0
 ## Usage

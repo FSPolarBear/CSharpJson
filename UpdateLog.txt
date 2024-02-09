@@ -1,0 +1,7 @@
+2024.2.9
+v1.0.1
+We optimized code to speed up parse.
+
+2024.2.8
+v1.0.0
+This is the first version of CSharpJson.

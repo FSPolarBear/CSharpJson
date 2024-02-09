@@ -4,7 +4,7 @@ namespace JsonTest
 {
     /// <summary>
     /// 
-    /// <para>2024.1.10</para>
+    /// <para>2024.1.30</para>
     /// <para>version 1.0.0</para>
     /// </summary>
     [TestClass]
@@ -33,6 +33,7 @@ namespace JsonTest
             Assert.AreEqual(3, d.Get<JsonArray>(3).Count);
             Console.WriteLine(actural);
 
+
         }
 
         [TestMethod]
@@ -41,7 +42,7 @@ namespace JsonTest
         /// <para>2024.1.30</para>
         /// <para>version 1.0.0</para>
         /// </summary>
-        public void TestFormat() 
+        public void TestFormat()
         {
             string str, actual, expected;
             str = "{\"a bc,ef\\\"g\": true,\"c\": {},\"d\": [[123,456],{},{\"a\": null},[1,2,3]],\"e\": [],\"g\": {\"g\": false, \"h\": true}}";
@@ -91,6 +92,5 @@ namespace JsonTest
             actual = obj2.ToString();
             Assert.AreEqual(expected, actual);
         }
-
     }
 }

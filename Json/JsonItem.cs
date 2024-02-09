@@ -11,8 +11,8 @@ namespace Json
 {
     /// <summary>
     /// Type of json item.
-    /// <para>2024.1.3</para>
-    /// <para>version 1.0.0</para>
+    /// <para>2024.2.9</para>
+    /// <para>version 1.0.1</para>
     /// </summary>
     public enum JsonItemType
     {
@@ -216,8 +216,8 @@ namespace Json
         /// } -> \n}
         /// No \n are added into JsonString.
         /// No \n are added for empty [] or {}.
-        /// <para>2024.1.4</para>
-        /// <para>version 1.0.0</para>
+        /// <para>2024.2.9</para>
+        /// <para>version 1.0.1</para>
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
@@ -229,7 +229,8 @@ namespace Json
             if(!(str.StartsWith('[') && str.EndsWith("]")) && !(str.StartsWith('{') && str.EndsWith('}')))
                 throw new JsonFormatException(GetFormatExceptionMessage());
             List<string> result = new List<string>();
-            while(str.Length > 0)
+            int pos = 0;
+            //while(str.Length > 0)
             {
                 for (int i = 0; i < str.Length; i++)
                 {
@@ -256,9 +257,11 @@ namespace Json
                     }
                     else if (str[i] == ',')
                     {
-                        result.Add(str.Substring(0, i + 1));
-                        str = str.Substring(i + 1).Trim();
-                        break;
+                        //result.Add(str.Substring(0, i + 1));
+                        //str = str.Substring(i + 1).Trim();
+                        //break;
+                        result.Add(str.Substring(pos, i + 1 - pos).Trim());
+                        pos = i + 1;
                     }
                     // { -> {\n
                     else if (str[i] == '{')
@@ -270,9 +273,11 @@ namespace Json
                             i = j;
                         else
                         {
-                            result.Add(str.Substring(0, i + 1));
-                            str = str.Substring(i + 1).Trim();
-                            break;
+                            //result.Add(str.Substring(0, i + 1));
+                            //str = str.Substring(i + 1).Trim();
+                            //break;
+                            result.Add(str.Substring(pos, i + 1 - pos).Trim());
+                            pos = i + 1;
                         }
                     }
                     // [ -> [\n
@@ -285,24 +290,28 @@ namespace Json
                             i = j; 
                         else
                         {
-                            result.Add(str.Substring(0, i + 1));
-                            str = str.Substring(i + 1).Trim();
-                            break;
+                            //result.Add(str.Substring(0, i + 1));
+                            //str = str.Substring(i + 1).Trim();
+                            //break;
+                            result.Add(str.Substring(pos, i + 1 - pos).Trim());
+                            pos = i + 1;
                         }
                     }
                     // } -> \n}     ] -> \n]
                     // i > 0 is to exclude the case of the last line with only one } or ]. This case is handled in the last if.
                     else if (i > 0 && (str[i] == '}' || str[i] == ']'))
                     {
-                        result.Add(str.Substring(0, i));
-                        str = str.Substring(i).Trim();
-                        break;
+                        //result.Add(str.Substring(0, i));
+                        //str = str.Substring(i).Trim();
+                        //break;
+                        result.Add(str.Substring(pos, i - pos).Trim());
+                        pos = i;
                     }
 
                     // If the string has been traversed, the loop ends.
                     if ( i == str.Length - 1)
                     {
-                        result.Add(str);
+                        result.Add(str.Substring(pos).Trim());
                         str = string.Empty;
                     }
                 }
@@ -402,6 +411,7 @@ namespace Json
                     if (line.StartsWith("}"))
                     {
                         end = i;
+                        
                         return result;
                     }
                     var kv = GetKeyValueStringFromLine(line);
