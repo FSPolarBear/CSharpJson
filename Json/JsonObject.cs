@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Json
 {
     /// <summary>
     /// Json object item of json.
-    /// <para>2024.2.8</para>
-    /// <para>version 1.0.0</para>
+    /// <para>2024.3.5</para>
+    /// <para>version 1.0.2</para>
     /// </summary>
     public class JsonObject : JsonItem, IDictionary<JsonString, JsonItem>
     {
@@ -41,13 +36,7 @@ namespace Json
             } }
         public int Count { get { return value.Count; } }
 
-        ICollection<JsonString> IDictionary<JsonString, JsonItem>.Keys => this.value.Keys;
 
-        public ICollection<JsonItem> Values => this.value.Values;
-
-        public bool IsReadOnly => ((ICollection<KeyValuePair<JsonString, JsonItem>>)value).IsReadOnly;
-
-        JsonItem IDictionary<JsonString, JsonItem>.this[JsonString key] { get => this.value[key]; set => this.value[key] = value; }
 
         /// <summary>
         /// Return a value indicates whether the key is included in the JsonObject.
@@ -81,17 +70,17 @@ namespace Json
                 return (T)(object)value;
             }
             else
-                throw new JsonInvalidTypeException(GetInvalidTypeExceptionMessage("Dictionary<JsonString, JsonItem>", type));
+                throw new JsonInvalidTypeException(JsonExceptionMessage.GetInvalidTypeExceptionMessage("Dictionary<JsonString, JsonItem>", type));
         }
 
         /// <summary>
-        /// 
-        /// <para>2024.1.4</para>
-        /// <para>version 1.0.0</para>
+        /// Convert the JsonObject to string and append it to a StringBuilder. 
+        /// <para>2024.3.5</para>
+        /// <para>version 1.0.2</para>
         /// </summary>
-        /// <returns></returns>
-        public override string ToString() {
-            StringBuilder result = new StringBuilder();
+        /// <param name="result"></param>
+        internal override void AddStringToStringBuilder(StringBuilder result)
+        {
             result.Append("{");
             bool first = true;
             foreach (KeyValuePair<JsonString, JsonItem> kv in value)
@@ -99,65 +88,93 @@ namespace Json
                 if (!first)
                     result.Append(", ");
                 first = false;
-                result.Append(kv.Key.ToString());
+                kv.Key.AddStringToStringBuilder(result);
                 result.Append(": ");
-                result.Append(kv.Value.ToString());
+                kv.Value.AddStringToStringBuilder(result);
             }
             result.Append("}");
+        }
+
+        /// <summary>
+        /// 
+        /// <para>2024.3.7</para>
+        /// <para>version 1.0.2</para>
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString() {
+            StringBuilder result = new StringBuilder();
+            AddStringToStringBuilder (result);
             return result.ToString();
         }
 
-        /// <summary>
-        /// Return a formatted json string of the JsonObject.
-        /// <para>2024.1.30</para>
-        /// <para>version 1.0.0</para>
-        /// </summary>
-        /// <returns></returns>
-        public string ToFormattedString()
-        {
-            return Format(ToString());
-        }
 
         /// <summary>
-        /// Format a json string.
-        /// <para>2024.1.30</para>
-        /// <para>version 1.0.0</para>
+        /// Convert the JsonObject to formatted string and append it to a StringBuilder. 
+        /// <para>2024.3.5</para>
+        /// <para>version 1.0.2</para>
         /// </summary>
-        /// <param name="json">Json string</param>
-        /// <returns></returns>
-        public static string Format(string json)
+        /// <param name="result"></param>
+        /// <param name="level"></param>
+        internal override void AddFormattedStringToStringBuilder(StringBuilder result, int level = 0)
         {
-            List<string> lines = JsonToLines(json);
-            int level = 0;
-            for (int i = 0; i < lines.Count; i++)
+            string space = new string(' ', (level + 1) * 4);
+            string space_last_line = new string(' ', level * 4);
+
+            result.Append('{');
+            if (Count == 0)
             {
-                if (lines[i].StartsWith("}") || lines[i].StartsWith("]"))
-                    level--;
-                lines[i] = new string(' ', 4 * level) + lines[i];
-                if (lines[i].EndsWith("{") || lines[i].EndsWith("["))
-                    level++;
+                result.Append('}');
+                return;
             }
-            return string.Join('\n', lines);
+            bool first = true;
+            foreach (KeyValuePair<JsonString, JsonItem> kv in value)
+            {
+                if (!first)
+                    result.Append(',');
+                result.Append('\n');
+                first = false;
+                
+                result.Append(space);
+                result.Append(kv.Key.ToString());
+                result.Append(": ");
+                kv.Value.AddFormattedStringToStringBuilder(result, level + 1);
+            }
+            result.Append('\n');
+            result.Append(space_last_line);
+            result.Append('}');
         }
+        /// <summary>
+        /// 
+        /// <para>2024.3.5</para>
+        /// <para>version 1.0.2</para>
+        /// </summary>
+        public string ToFormattedString()
+        {
+            StringBuilder result = new StringBuilder();
+            AddFormattedStringToStringBuilder(result);
+            return result.ToString();
+
+        }
+
 
 
         /// <summary>
         /// Parse a string to JsonObject
-        /// <para>2024.1.4</para>
-        /// <para>version 1.0.0</para>
+        /// <para>2024.3.1</para>
+        /// <para>version 1.0.2</para>
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
         /// <exception cref="JsonFormatException">The string cannot be parsed.</exception>
         public static new JsonObject Parse(string str)
         {
-            str = str.Trim();
             if (!(str.StartsWith('{') && str.EndsWith('}')))
-                throw new JsonFormatException(GetFormatExceptionMessage("JsonObject"));
-            if (str == "{}" || str == "{ }")
-                return new JsonObject();
-            int _;
-            return  ParseLinesToObject(JsonToLines(str), 0, out _);
+                throw new JsonFormatException(JsonExceptionMessage.GetFormatExceptionMessage("JsonObject"));
+            int end;
+            JsonObject result = JsonParser.ParseObject(str, 0, out end);
+            if (end != str.Length - 1)
+                throw new JsonFormatException(JsonExceptionMessage.GetFormatExceptionMessage("JsonObject"));
+            return result;
         }
 
 
@@ -207,7 +224,7 @@ namespace Json
             {
                 return Get<T>(key);
             }
-            catch (Exception ex) 
+            catch (Exception) 
             {
                 return defaultValue;
             }
@@ -265,6 +282,13 @@ namespace Json
 
         // The following are the methods that are necessary in order to implement the IDictionary interface
 
+        ICollection<JsonString> IDictionary<JsonString, JsonItem>.Keys => this.value.Keys;
+
+        public ICollection<JsonItem> Values => this.value.Values;
+
+        public bool IsReadOnly => ((ICollection<KeyValuePair<JsonString, JsonItem>>)value).IsReadOnly;
+
+        JsonItem IDictionary<JsonString, JsonItem>.this[JsonString key] { get => this.value[key]; set => this.value[key] = value; }
         public void Add(JsonString key, JsonItem value)
         {
             this.value.Add(key, value);

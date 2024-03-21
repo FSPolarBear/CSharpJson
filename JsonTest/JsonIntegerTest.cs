@@ -4,8 +4,8 @@ namespace JsonTest
 {
     /// <summary>
     /// 
-    /// <para>2024.1.4</para>
-    /// <para>version 1.0.0</para>
+    /// <para>2024.3.21</para>
+    /// <para>version 1.0.2</para>
     /// </summary>
     [TestClass]
     public class JsonIntegerTest
@@ -35,7 +35,7 @@ namespace JsonTest
             {
                 string g = integer.GetValue<string>();
                 Assert.Fail();
-            }catch (Exception ex) { }
+            }catch (Exception) { }
 
             JsonItem h = integer.GetValue<JsonItem>();
             Assert.AreSame(integer, h);
@@ -43,10 +43,40 @@ namespace JsonTest
             Assert.AreSame(integer, i);
         }
 
+        /// <summary>
+        /// 
+        /// <para>2024.3.21</para>
+        /// <para>version 1.0.2</para>
+        /// </summary>
         [TestMethod]
-        public void TestParse() 
+        public void TestParse()
         {
+            string str;
 
+            JsonInteger item;
+
+            str = "123456";
+            item = JsonInteger.Parse(str);
+            Assert.AreEqual(123456, item.GetValue<int>());
+
+
+
+            str = "-12e+3";
+            item = JsonInteger.Parse(str);
+            Assert.AreEqual(-12000, item.GetValue<int>());
+
+            str = "12.34e5";
+            item = JsonInteger.Parse(str);
+            Assert.AreEqual(1234000, item.GetValue<int>());
+
+            str = "12.0";
+            item = JsonInteger.Parse(str);
+            Assert.AreEqual(12, item.GetValue<int>());
+
+
+            str = "12000.00e-3";
+            item = JsonInteger.Parse(str);
+            Assert.AreEqual(12, item.GetValue<int>());
         }
     }
 }

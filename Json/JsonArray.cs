@@ -1,17 +1,12 @@
-﻿using System;
-using System.CodeDom.Compiler;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Json
 {
     /// <summary>
     /// Array item of json
-    /// <para>2024.2.8</para>
-    /// <para>version 1.0.0</para>
+    /// <para>2024.3.5</para>
+    /// <para>version 1.0.2</para>
     /// </summary>
     public class JsonArray : JsonItem, IEnumerable<JsonItem>
     {
@@ -23,6 +18,13 @@ namespace Json
         public JsonArray(List<JsonItem> value) {
             ItemType = JsonItemType.Array;
             this.value = value;
+        }
+
+        public JsonArray(Array value)
+        {
+            ItemType = JsonItemType.Array;
+            this.value = new List<JsonItem>();
+            foreach (object? item in value) { this.value.Add(CreateFromValue(item)); }
         }
 
         public object? this[int index] { get { return this.value[index]; } set { this.value[index] = JsonItem.CreateFromValue(value); } }
@@ -52,29 +54,7 @@ namespace Json
                 return (T)(object)value.ToArray();
             }
             else
-                throw new JsonInvalidTypeException(GetInvalidTypeExceptionMessage(new string[] { "List<JsonItem>", "JsonItem[]"}, type));
-        }
-        /// <summary>
-        /// 
-        /// <para>2024.1.4</para>
-        /// <para>version 1.0.0</para>
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString() { 
-            StringBuilder result = new StringBuilder();
-            result.Append("[");
-            bool first = true;
-            for (int i = 0; i < value.Count; i++)
-            {
-                if (!first)
-                    result.Append(", ");
-                first = false;
-                result.Append(value[i].ToString());
-               
-                
-            }
-            result.Append("]");
-            return result.ToString();
+                throw new JsonInvalidTypeException(JsonExceptionMessage.GetInvalidTypeExceptionMessage(new string[] { "List<JsonItem>", "JsonItem[]"}, type));
         }
 
         /// <summary>
@@ -87,13 +67,13 @@ namespace Json
         /// <exception cref="JsonFormatException">The string cannot be parsed.</exception>
         public static new JsonArray Parse(string str)
         {
-            str = str.Trim();
             if (!(str.StartsWith('[') && str.EndsWith(']')))
-                throw new JsonFormatException(GetFormatExceptionMessage("JsonArray"));
-            if (str == "[]" || str == "[ ]")
-                return new JsonArray();
-            int _;
-            return ParseLinesToArray(JsonToLines(str), 0, out _);
+                throw new JsonFormatException(JsonExceptionMessage.GetFormatExceptionMessage("JsonArray"));
+            int end;
+            JsonArray result = JsonParser.ParseArray(str, 0, out end);
+            if (end != str.Length - 1)
+                throw new JsonFormatException(JsonExceptionMessage.GetFormatExceptionMessage("JsonArray"));
+            return result;
         }
 
         /// <summary>
@@ -125,10 +105,90 @@ namespace Json
             {
                 return Get<T>(index);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return defualtValue;
             }
+        }
+
+        /// <summary>
+        /// Convert the JsonArray to string and append it to a StringBuilder. 
+        /// <para>2024.3.7</para>
+        /// <para>version 1.0.2</para>
+        /// </summary>
+        /// <param name="result"></param>
+        /// <param name="level"></param>
+        internal override void AddStringToStringBuilder(StringBuilder result)
+        {
+            result.Append("[");
+            bool first = true;
+            for (int i = 0; i < value.Count; i++)
+            {
+                if (!first)
+                    result.Append(", ");
+                first = false;
+                //result.Append(value[i].ToString());
+                value[i].AddStringToStringBuilder(result);
+
+
+            }
+            result.Append("]");
+        }
+
+        /// <summary>
+        /// 
+        /// <para>2024.3.7</para>
+        /// <para>version 1.0.2</para>
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            StringBuilder result = new StringBuilder();
+            AddStringToStringBuilder(result);
+            return result.ToString();
+        }
+
+        /// <summary>
+        /// Convert the JsonArray to formatted string and append it to a StringBuilder. 
+        /// <para>2024.3.5</para>
+        /// <para>version 1.0.2</para>
+        /// </summary>
+        /// <param name="result"></param>
+        /// <param name="level"></param>
+        internal override void AddFormattedStringToStringBuilder(StringBuilder result, int level = 0)
+        {
+            string space = new string(' ', (level+1) * 4);
+            string space_last_line = new string(' ', level * 4);
+            result.Append('[');
+            if (Count == 0)
+            {
+                result.Append(']');
+                return;
+            }
+            result.Append('\n');
+            result.Append(space);
+            value[0].AddFormattedStringToStringBuilder(result, level + 1);
+            for(int i = 1; i < Count; i++)
+            {
+                result.Append(",\n");
+                result.Append(space);
+                value[i].AddFormattedStringToStringBuilder(result, level + 1);
+            }
+            result.Append('\n');
+            result.Append(space_last_line);
+            result.Append(']');
+        }
+        /// <summary>
+        /// 
+        /// <para>2024.3.5</para>
+        /// <para>version 1.0.2</para>
+        /// </summary>
+        public string ToFormattedString()
+        {
+            StringBuilder result = new StringBuilder();
+            AddFormattedStringToStringBuilder(result);
+            return result.ToString();
+            
         }
 
         /// <summary>
@@ -138,8 +198,8 @@ namespace Json
         /// </summary>
         /// <param name="value"></param>
         /// <exception cref="JsonInvalidTypeException">The value cannot be convert to a JsonItem object.</exception>
-        public void Add(object? value) 
-        { 
+        public void Add(object? value)
+        {
             this.value.Add(JsonItem.CreateFromValue(value));
         }
 
@@ -152,13 +212,15 @@ namespace Json
         public void RemoveAt(int index) { this.value.RemoveAt(index); }
 
         /// <summary>
-        /// Remove the item. 
-        /// <para>2024.2.8</para>
-        /// <para>version 1.0.0</para>
+        /// Insert an item into the JsonArray at the specified index.
+        /// <para>2024.3.7</para>
+        /// <para>version 1.0.2</para>
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns>True if remove successfully, otherwise false.</returns>
-        public bool Remove(JsonItem value) { return this.value.Remove(value); }
+        /// <param name="index"></param>
+        public void Insert(int index, object? item)
+        {
+            this.value.Insert(index, CreateFromValue(item));
+        }
 
         public IEnumerator<JsonItem> GetEnumerator()
         {
@@ -169,5 +231,7 @@ namespace Json
         {
             return value.GetEnumerator();
         }
+
+
     }
 }

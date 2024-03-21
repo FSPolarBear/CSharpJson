@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Json
+﻿namespace Json
 {
     /// <summary>
     /// Null item of json.
@@ -37,9 +31,11 @@ namespace Json
             if(typeof(T) == typeof(JsonItem) || typeof(T) == typeof(JsonNull)) 
                 return (T)(object)this; 
             else if(default(T) ==  null)
-                return default;
+                // We want this default to be null, but it leads to a warning CS8603. 
+                // So we add ! to avoid the warning.
+                return default!;
             else
-                throw new JsonInvalidTypeException(GetInvalidTypeExceptionMessage("Nullable", typeof(T)));
+                throw new JsonInvalidTypeException(JsonExceptionMessage.GetInvalidTypeExceptionMessage("Nullable", typeof(T)));
         }
 
         /// <summary>
@@ -52,10 +48,9 @@ namespace Json
         /// <exception cref="JsonFormatException">The string cannot be parsed.</exception>
         public static new JsonNull Parse(string str)
         {
-            str = str.Trim();
             if (str == "null")
                 return new JsonNull();
-            throw new JsonFormatException(GetFormatExceptionMessage("JsonNull"));
+            throw new JsonFormatException(JsonExceptionMessage.GetFormatExceptionMessage("JsonNull"));
         }
 
     }

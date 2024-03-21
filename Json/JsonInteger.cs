@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Json
+﻿namespace Json
 {
     /// <summary>
     /// Integer item of json.
-    /// <para>2024.1.4</para>
-    /// <para>version 1.0.0</para>
+    /// <para>2024.3.21</para>
+    /// <para>version 1.0.2</para>
     /// </summary>
     public class JsonInteger : JsonItem
     {
@@ -58,7 +52,7 @@ namespace Json
                 return (T)(object)(float)value;
             }
             else
-                throw new JsonInvalidTypeException(GetInvalidTypeExceptionMessage(new string[] { "long", "int", "short", "decimal", "double", "float"}, type));
+                throw new JsonInvalidTypeException(JsonExceptionMessage.GetInvalidTypeExceptionMessage(new string[] { "long", "int", "short", "decimal", "double", "float"}, type));
         }
 
         /// <summary>
@@ -71,19 +65,28 @@ namespace Json
 
         /// <summary>
         /// Parse a string to JsonInteger.
-        /// <para>2024.1.3</para>
-        /// <para>version 1.0.0</para>
+        /// <para>2024.3.21</para>
+        /// <para>version 1.0.2</para>
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
         /// <exception cref="JsonFormatException">The string cannot be parsed.</exception>
         public static new JsonInteger Parse(string str)
         {
-            str = str.Trim();
-            long value;
-            bool succeed = long.TryParse(str, out value);
-            if (succeed) { return new JsonInteger(value); }
-            throw new JsonFormatException(GetFormatExceptionMessage("JsonInteger"));
+            int end;
+            JsonItem item;
+            try
+            {
+                item = JsonParser.ParseNumber(str, 0, out end);
+            }
+            catch (Exception)
+            {
+                throw new JsonFormatException(JsonExceptionMessage.GetFormatExceptionMessage("JsonInteger"));
+            }
+            JsonInteger? result = item as JsonInteger;
+            if (end != str.Length - 1 || result == null)
+                throw new JsonFormatException(JsonExceptionMessage.GetFormatExceptionMessage("JsonInteger"));
+            return result;
         }
     }
 }

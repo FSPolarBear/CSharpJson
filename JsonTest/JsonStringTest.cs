@@ -4,16 +4,16 @@ namespace JsonTest
 {
     /// <summary>
     /// 
-    /// <para>2024.1.11</para>
-    /// <para>version 1.0.0</para>
+    /// <para>2024.2.26</para>
+    /// <para>version 1.0.2</para>
     /// </summary>
     [TestClass]
     public class JsonStringTest
     {
         /// <summary>
         /// 
-        /// <para>2024.1.11</para>
-        /// <para>version 1.0.0</para>
+        /// <para>2024.2.26</para>
+        /// <para>version 1.0.2</para>
         /// </summary>
         [TestMethod]
         public void TestParse()
@@ -51,6 +51,14 @@ namespace JsonTest
                 obj = JsonString.Parse(str);
                 Assert.Fail();
             }catch (JsonFormatException) { }
+
+            str = "\"ab\"cd\"";
+            try
+            {
+                obj = JsonString.Parse(str);
+                Assert.Fail();
+            }
+            catch (JsonFormatException) { }
         }
 
         /// <summary>
@@ -94,7 +102,7 @@ namespace JsonTest
         {
             string str;
             JsonString actual, expected;
-
+            
             str = "abcde";
             expected = new JsonString(str);
             actual = JsonString.Parse(expected.ToString());

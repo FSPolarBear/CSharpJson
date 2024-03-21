@@ -4,8 +4,8 @@ namespace JsonTest
 {
     /// <summary>
     /// 
-    /// <para>2024.1.30</para>
-    /// <para>version 1.0.0</para>
+    /// <para>2024.3.5</para>
+    /// <para>version 1.0.2</para>
     /// </summary>
     [TestClass]
     public class JsonObjectTest
@@ -39,8 +39,8 @@ namespace JsonTest
         [TestMethod]
         /// <summary>
         /// 
-        /// <para>2024.1.30</para>
-        /// <para>version 1.0.0</para>
+        /// <para>2024.3.5</para>
+        /// <para>version 1.0.2</para>
         /// </summary>
         public void TestFormat()
         {
@@ -70,7 +70,8 @@ namespace JsonTest
         ""h"": true
     }
 }".Replace("\r\n", "\n");
-            actual = JsonObject.Format(str);
+            
+            actual = JsonObject.Parse(str).ToFormattedString();
             Assert.AreEqual(expected, actual);
         }
 

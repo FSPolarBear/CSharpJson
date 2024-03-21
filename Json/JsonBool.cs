@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Json
+﻿namespace Json
 {
     /// <summary>
     /// Bool item of json.
@@ -39,7 +33,7 @@ namespace Json
                 return (T)(object)value;
             }
             else
-                throw new JsonInvalidTypeException(GetInvalidTypeExceptionMessage("bool", type));
+                throw new JsonInvalidTypeException(JsonExceptionMessage.GetInvalidTypeExceptionMessage("bool", type));
         }
 
         /// <summary>
@@ -60,13 +54,12 @@ namespace Json
         /// <exception cref="JsonFormatException">The string cannot be parsed.</exception>
         public static new JsonBool Parse(string str)
         {
-            str = str.Trim();
             if (str == "true")
                 return new JsonBool(true);
             else if (str == "false")
                 return new JsonBool(false);
             else
-                throw new JsonFormatException(GetFormatExceptionMessage("JsonBool"));
+                throw new JsonFormatException(JsonExceptionMessage.GetFormatExceptionMessage("JsonBool"));
         }
     }
 }

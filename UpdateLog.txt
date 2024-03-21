@@ -1,3 +1,15 @@
+2024.3.21
+v1.0.2
+We optimized code to speed up Parse and ToString.
+We fixed a bug that a string with non-escaped " (e.g., string str = "\"aaa\"aaa\"")  can be parse to JsonString. 
+We fixed a bug that a number string with e (e.g., string str = "1e5") cannot be parsed to JsonInteger or JsonFloat.
+We fixed some mistakes in readme.md.
+Now, a string starts or ends with space (For example, string str = " true ") cannot be parse to JsonItem.
+Now, a number string with integer value will be parsed to JsonInteger, even if it has point (e.g., str = "1.0"). 
+We added ToFormattedString method to JsonArray.
+We add a constructor with an Array as parameter to JsonArray. (An usage: object?[] objects = new object?[]{ "value1", 0, true, null}; JsonArray arr = new JsonArray(objects);)
+We updated JsonItem.CreateFromValue to add a support to create a JsonArray by Array or List<T> and add a support to create a JsonObject by Dictionary<string, T>, where T is any type supported as an item of json.
+
 2024.2.9
 v1.0.1
 We optimized code to speed up parse.
