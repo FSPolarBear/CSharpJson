@@ -25,6 +25,7 @@ These types are supported as an item of json:
 | true      | bool                                     |
 | false     | bool                                     |
 | null      | null                                     |
+
 where T is any type supported as an item of json.<br>
 Notice that we use `long` to store integers, whose range is `-9,223,372,036,854,775,808` to `9,223,372,036,854,775,807`; we use `decimal` to store non-integer numbers, whose range is `±1.0 x 10^-28` to `±7.9228 x 10^28`. Out-of-range numbers are not supported.<br>
 
