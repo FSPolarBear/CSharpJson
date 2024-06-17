@@ -6,9 +6,9 @@ namespace Json
 {
     /// <summary>
     /// Json object item of json.
-    /// <para>2024.3.5</para>
-    /// <para>version 1.0.2</para>
     /// </summary>
+    /// 2024.5.19
+    /// version 1.0.3
     public class JsonObject : JsonItem, IDictionary<JsonString, JsonItem>
     {
         private Dictionary<JsonString, JsonItem> value;
@@ -39,10 +39,10 @@ namespace Json
 
 
         /// <summary>
-        /// Return a value indicates whether the key is included in the JsonObject.
-        /// <para>2024.1.4</para>
-        /// <para>version 1.0.0</para>
+        /// Return a value indicates whether the key is contained in the JsonObject.
         /// </summary>
+        /// 2024.1.4
+        /// version 1.0.0
         /// <param name="key"></param>
         /// <returns></returns>
         public bool ContainsKey(string key)
@@ -52,9 +52,9 @@ namespace Json
 
         /// <summary>
         /// Get the value of the item in the specified type.
-        /// <para>2024.1.4</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.4
+        /// version 1.0.0
         /// <typeparam name="T">JsonItem, JsonObject, Dictionary<JsonString, JsonItem></typeparam>
         /// <returns></returns>
         /// <exception cref="JsonInvalidTypeException">The type is invalid.</exception>
@@ -75,9 +75,9 @@ namespace Json
 
         /// <summary>
         /// Convert the JsonObject to string and append it to a StringBuilder. 
-        /// <para>2024.3.5</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.5
+        /// version 1.0.2
         /// <param name="result"></param>
         internal override void AddStringToStringBuilder(StringBuilder result)
         {
@@ -97,9 +97,9 @@ namespace Json
 
         /// <summary>
         /// 
-        /// <para>2024.3.7</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.7
+        /// version 1.0.2
         /// <returns></returns>
         public override string ToString() {
             StringBuilder result = new StringBuilder();
@@ -110,9 +110,9 @@ namespace Json
 
         /// <summary>
         /// Convert the JsonObject to formatted string and append it to a StringBuilder. 
-        /// <para>2024.3.5</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.5
+        /// version 1.0.2
         /// <param name="result"></param>
         /// <param name="level"></param>
         internal override void AddFormattedStringToStringBuilder(StringBuilder result, int level = 0)
@@ -145,9 +145,9 @@ namespace Json
         }
         /// <summary>
         /// 
-        /// <para>2024.3.5</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.5
+        /// version 1.0.2
         public string ToFormattedString()
         {
             StringBuilder result = new StringBuilder();
@@ -160,9 +160,9 @@ namespace Json
 
         /// <summary>
         /// Parse a string to JsonObject
-        /// <para>2024.3.1</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.1
+        /// version 1.0.2
         /// <param name="str"></param>
         /// <returns></returns>
         /// <exception cref="JsonFormatException">The string cannot be parsed.</exception>
@@ -181,9 +181,9 @@ namespace Json
 
         /// <summary>
         /// Get the value in the specified type by the specified key from the JsonObject.
-        /// <para>2024.1.4</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.4
+        /// version 1.0.0
         /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>
         /// <returns></returns>
@@ -196,9 +196,9 @@ namespace Json
 
         /// <summary>
         /// Get the value in the specified type by the specified key from the JsonObject.
-        /// <para>2024.1.4</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.4
+        /// version 1.0.0
         /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>
         /// <returns></returns>
@@ -211,9 +211,9 @@ namespace Json
 
         /// <summary>
         /// Get the value in the specified type by the specified key from the JsonObject. If the key is not found or the type is invalid, return a specified default value.
-        /// <para>2024.1.4</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.4
+        /// version 1.0.0
         /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>
         /// <param name="defaultValue"></param>
@@ -232,9 +232,9 @@ namespace Json
 
         /// <summary>
         /// Get the value in the specified type by the specified key from the JsonObject. If the key is not found or the type is invalid, return a specified default value.
-        /// <para>2024.1.4</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.4
+        /// version 1.0.0
         /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>
         /// <param name="defaultValue"></param>
@@ -246,9 +246,9 @@ namespace Json
 
         /// <summary>
         /// 
-        /// <para>2024.2.8</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.2.8
+        /// version 1.0.0
         /// <param name="key"></param>
         /// <param name="value"></param>
         public void Add(string key, object? value)
@@ -258,9 +258,9 @@ namespace Json
 
         /// <summary>
         /// 
-        /// <para>2024.2.8</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.2.8
+        /// version 1.0.0
         /// <param name="item"></param>
         public void Add(KeyValuePair<string, object?> item)
         {
@@ -270,15 +270,100 @@ namespace Json
 
         /// <summary>
         /// Remove the item at the specified key.
-        /// <para>2024.2.8</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.2.8
+        /// version 1.0.0
         /// <param name="key"></param>
         /// <returns>True if remove successfully, otherwise false.</returns>
         public bool Remove(string key)
         {
             return this.value.Remove(new JsonString(key));
         }
+
+        /// <summary>
+        /// Get the value by path.
+        /// </summary>
+        /// 2024.4.4
+        /// version 1.0.3
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        /// <exception cref="JsonInvalidPathException">The path is invalid.</exception>
+        /// <exception cref="JsonInvalidTypeException">The type is invalid.</exception>
+        public T GetByPath<T>(string[] path)
+        {
+            bool isSucceed = TryGetItemByPath(path, out JsonItem? item);
+            if (!isSucceed)
+                throw new JsonInvalidPathException(JsonExceptionMessage.GetInvalidPathMessage());
+            return item!.GetValue<T>();
+        }
+
+        /// <summary>
+        /// Get the value by path.
+        /// </summary>
+        /// 2024.4.4
+        /// version 1.0.3
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        public T GetByPath<T>(string[] path, T defaultValue)
+        {
+            bool isSucceed = TryGetItemByPath(path, out JsonItem? item);
+            if (!isSucceed)
+                return defaultValue;
+            return item!.GetValue<T>(defaultValue);
+        }
+
+        /// <summary>
+        /// Get the value by path.
+        /// </summary>
+        /// 2024.6.11
+        /// version 1.0.3
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        /// <exception cref="JsonInvalidPathException">The path is invalid.</exception>
+        /// <exception cref="JsonInvalidTypeException">The type is invalid.</exception>
+        public T GetByPath<T>(string path, char splitCharacter = '.')
+        {
+            return GetByPath<T>(path.Split(splitCharacter));
+        }
+
+        /// <summary>
+        /// Get the value by path.
+        /// </summary>
+        /// 2024.6.11
+        /// version 1.0.3
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        public T GetByPath<T>(string path, T defaultValue, char splitCharacter = '.')
+        {
+            return GetByPath(path.Split(splitCharacter), defaultValue);
+        }
+
+
+
+        /// <summary>
+        /// Convert JsonObject to a dictionary with string keys and values in a specified type. All the values should be the specified type.
+        /// </summary>
+        /// 2024.5.19
+        /// version 1.0.3
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="JsonInvalidTypeException">The type is invalid for some values</exception>
+        public Dictionary<string, T> ToDictionary<T>()
+        {
+            Dictionary<string, T> result = new Dictionary<string, T>();
+            foreach(KeyValuePair<JsonString, JsonItem> pair in this.value)
+            {
+                result.Add(pair.Key.GetValue<string>(), pair.Value.GetValue<T>());
+            }
+            return result;
+        }
+
 
         // The following are the methods that are necessary in order to implement the IDictionary interface
 

@@ -2,9 +2,9 @@
 {
     /// <summary>
     /// Non-integer number item of json.
-    /// <para>2024.3.21</para>
-    /// <para>version 1.0.2</para>
     /// </summary>
+    /// 2024.3.21
+    /// version 1.0.2
     public class JsonFloat : JsonItem
     {
         private decimal value;
@@ -15,9 +15,9 @@
 
         /// <summary>
         /// Get the value of the item in the specified type.
-        /// <para>2024.1.3</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.3
+        /// version 1.0.0
         /// <typeparam name="T">JsonItem, JsonFloat, decimal, double, float</typeparam>
         /// <returns></returns>
         /// <exception cref="JsonInvalidTypeException">The type is invalid.</exception>
@@ -48,9 +48,9 @@
 
         /// <summary>
         /// Parse a string to JsonFloat.
-        /// <para>2024.3.21</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.21
+        /// version 1.0.2
         /// <param name="str"></param>
         /// <returns></returns>
         /// <exception cref="JsonFormatException">The string cannot be parsed.</exception>

@@ -2,7 +2,7 @@
 This is a json library for C#. 
 
 ## version
-1.0.2
+1.0.3
 
 ## Support
 .Net 6.0
@@ -20,6 +20,7 @@ These types are supported as an item of json:
 | object    | JsonObject, Dictionary\<string, T>       |
 | array     | JsonArray, Array, List\<T>               |
 | string    | string                                   |
+| string (Length == 1)| string, char |
 | number (integer)    | long, int, short, decimal, double, float |
 | number    | decimal, double, float                   |
 | true      | bool                                     |
@@ -48,7 +49,7 @@ JsonItem item9 = JsonItem.Parse("{\"key1\": [0, 1, 2.5, true]}");
 ```
 
 #### Get value from a JsonItem
-You can get the value in the specified type by `GetValue`. You can provide a default value, and the default value will be return when the specified type is not valid for the item.
+You can get the value in the specified type by `GetValue`. You can provide a default value, and the default value will be returned when the specified type is not valid for the item.
 ```
 JsonItem item = JsonItem.CreateFromValue(1.5);
 
@@ -107,7 +108,7 @@ obj["key3"] = true;
 ```
 
 #### Get value from a JsonObject
-You can get a value in the specified type by a key by `Get`. You can provide a default value, and the default value will be return when the key is not found or the specified type is not valid for the item.
+You can get a value in the specified type by a key by `Get`. You can provide a default value, and the default value will be returned when the key is not found or the specified type is not valid for the item.
 ```
 JsonObject obj = new JsonObject() { { "key", 1.5 } };
 
@@ -127,13 +128,32 @@ double v2 = JsonItem.CreateFromValue(obj["key"]).GetValue<double>(); // v2: 1.5
 double v3 = obj.GetValue<Dictionary<JsonString, JsonItem>>()["key"].GetValue<double>(); // v3: 1.5
 ```
 
+You can get the JsonItem by path in multi-JsonObject/JsonArray by `GetByPath`. You can provide a default value, and the default value will be returned when the path is incorrect or the specified type is not valid for the item.
+```
+JsonObject obj = JsonObject.Parse("{\"key1\": {\"key2\": {\"key3\": 1}}}");
+
+// The path will be split to keys by splitCharacter.
+// Be sure that each key in the path does not contain splitCharacter.
+// public T GetByPath<T>(string path, char splitCharacter = '.');
+int v1 = obj.GetByPath<int>("key1.key2.key3"); // v1: 1
+
+// If you don't know what character will never be contained by the keys, you can input an array as path.
+// public T GetByPath<T>(string[] path);
+int v2 = obj.GetByPath<int>(new string[]{"key1", "key2", "key3"}); // v2: 1
+
+// public T GetByPath<T>(string path, T defaultValue, char splitCharacter = '.');
+// public T GetByPath<T>(string[] path, T defaultValue);
+int v3 = obj.GetByPath<int>("incorrect_path", 0); // v3: 0
+
+```
+
 #### Convert to string
 You can convert a JsonObject to string by `ToString` or `ToFormattedString`.
 ```
 JsonObject obj = new JsonObject()
 {
     {"key1", "value1"},
-    {"key2", 0 },
+    {"key2", 0},
     {"key3", true},
     {"key4", null}
 };
@@ -156,6 +176,21 @@ str2 is a string:
     "key4": null
 }
 */
+```
+
+#### Convert to dictionary
+You can convert a JsonObject to a dictionary with keys in string and values in a specified type by `ToDictionary`. All values of the JsonObject should be in the specified type.
+```
+JsonObject obj = new JsonObject()
+{
+    {"key1", 0},
+    {"key2", 1},
+    {"key3", 2},
+    {"key4", 3}
+};
+
+// public Dictionary<string, T> ToDictionary<T>();
+Dictionary<string, int> dict = obj.ToDictionary<int>();
 ```
 
 #### Other fields and methods
@@ -196,6 +231,7 @@ arr.Add("value1");
 arr.Add(1.5);
 arr.Add(true);
 ```
+
 You can modify an item by index.
 ```
 JsonArray arr = new JsonArray() { "value1", 1.5, true, null };
@@ -204,8 +240,26 @@ JsonArray arr = new JsonArray() { "value1", 1.5, true, null };
 arr[1] = "modified_value";
 ```
 
+You can get the JsonItem by path in multi-JsonObject/JsonArray by `GetByPath`. You can provide a default value, and the default value will be returned when the path is incorrect or the specified type is not valid for the item.
+```
+JsonArray arr = JsonArray.Parse("[true, [{\"key1\": [12345]}], false]");
+
+// The path will be split to keys by splitCharacter.
+// Be sure that each key in the path does not contain splitCharacter.
+// public T GetByPath<T>(string path, char splitCharacter = '.');
+int v1 = arr.GetByPath<int>("1.0.key1.0"); // v1: 12345
+
+// If you don't know what character will never be contained by the keys, you can input an array as path.
+// public T GetByPath<T>(string[] path);
+int v2 = arr.GetByPath<int>(new string[]{"1", "0", "key1", "0"}); // v2: 12345
+
+// public T GetByPath<T>(string path, T defaultValue, char splitCharacter = '.');
+// public T GetByPath<T>(string[] path, T defaultValue);
+int v3 = arr.GetByPath<int>("incorrect_path", 0); // v3: 0
+```
+
 #### Get value from a JsonArray
-You can get a value in the specified type by a index by `Get`. You can provide a default value, and the default value will be return when the index is out of range or the specified type is not valid for the item.
+You can get a value in the specified type by a index by `Get`. You can provide a default value, and the default value will be returned when the index is out of range or the specified type is not valid for the item.
 ```
 JsonArray arr = new JsonArray() { "value1", 1.5, true, null };
 
@@ -251,12 +305,40 @@ str2 is a string:
 */
 ```
 
+#### Convert to list or array
+You can convert a JsonArray to a list or an array with elements in a specified type by `ToList` or `ToArray`. All elements of the JsonArray should be in the specified type.
+```
+JsonArray arr = new JsonArray{0, 1, 2, 3};
+
+// public List<T> ToList<T>();
+List<int> list = arr.ToList<int>();
+
+// public T[] ToArray<T>();
+int[] array = arr.ToArray<int>();
+```
+
 #### Other fields and methods
 JsonArray provides some fields and methods that are similar to List as following.
 ```
 public int Count;
 public void RemoveAt(int index);
 public void Insert(int index, object? item);
+```
+
+---
+
+### JsonConfig
+Class `JsonConfig` provides some configs.
+#### EnsureAscii
+If `EnsureAscii` is true, all non-ascii characters will be escaped by \u in `ToString` and `ToFormattedString`.
+```
+// public static bool EnsureAscii = false;
+
+JsonItem item = JsonItem.CreateFromValue("\u5000");
+JsonConfig.EnsureAscii = true;
+string str1 = item.ToString(); // str1: @"\u5000"
+JsonConfig.EnsureAscii = false;
+string str2 = item.ToString(); // str1: "倀"
 ```
 
 ---
@@ -268,10 +350,15 @@ A JsonInvalidTypeException will be thrown when getting value with an invalid typ
 JsonItem item = JsonItem.CreateFromValue("This is not an integer");
 int v = item.GetValue<int>(); // A JsonInvalidTypeException will be thrown.
 ```
-A JsonInvalidTypeException will be thrown when creating JsonItem by a value with unsupported type.
+A JsonInvalidTypeException will be thrown when creating JsonItem by a value with an unsupported type.
 ```
 class SomeClass{}
 JsonIten item = JsonItem.CreateFromValue(new SomeClass()); // A JsonInvalidTypeException will be thrown.
+```
+A JsonInvalidTypeException will be thrown when converting a JsonObject to a dictionary or converting a JsonArray to a list or an array, while not all the elements/values are in the specified type.
+```
+JsonArray arr = new JsonArray(){0, 1, "This is not an integer", 3, 4};
+arr.ToList<int>(); // A JsonInvalidTypeException will be thrown.
 ```
 #### JsonFormatException
 A JsonFormatException will be thrown when parsing an invalid string.

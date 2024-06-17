@@ -4,17 +4,17 @@ namespace JsonTest
 {
     /// <summary>
     /// 
-    /// <para>2024.3.21</para>
-    /// <para>version 1.0.2</para>
     /// </summary>
+    /// 2024.3.21
+    /// version 1.0.2
     [TestClass]
     public class JsonFloatTest
     {
         /// <summary>
         /// 
-        /// <para>2024.3.21</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.21
+        /// version 1.0.2
         [TestMethod]
         public void TestParse()
         {

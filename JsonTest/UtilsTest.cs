@@ -5,17 +5,17 @@ namespace JsonTest
 {
     /// <summary>
     /// 
-    /// <para>2024.3.7</para>
-    /// <para>version 1.0.2</para>
     /// </summary>
+    /// 2024.3.7
+    /// version 1.0.2
     [TestClass]
     public class UtilsTest
     {
         /// <summary>
         /// 
-        /// <para>2024.3.7</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.7
+        /// version 1.0.2
         [TestMethod]
         public void TestGetActualType()
         {
@@ -38,9 +38,9 @@ namespace JsonTest
 
         /// <summary>
         /// 
-        /// <para>2024.3.7</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.7
+        /// version 1.0.2
         [TestMethod]
         public void TestIsList() 
         { 
@@ -62,9 +62,9 @@ namespace JsonTest
 
         /// <summary>
         /// 
-        /// <para>2024.3.7</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.7
+        /// version 1.0.2
         [TestMethod]
         public void TestIsDictionaryWithStringKey()
         {

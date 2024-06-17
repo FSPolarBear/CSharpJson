@@ -2,9 +2,9 @@
 {
     /// <summary>
     /// Null item of json.
-    /// <para>2024.1.4</para>
-    /// <para>version 1.0.0</para>
     /// </summary>
+    /// 2024.1.4
+    /// version 1.0.0
     public class JsonNull : JsonItem
     {
         public JsonNull()
@@ -20,9 +20,9 @@
 
         /// <summary>
         /// Get the value of the item in the specified type.
-        /// <para>2024.1.4</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.4
+        /// version 1.0.0
         /// <typeparam name="T">JsonItem, JsonNull, nullable types</typeparam>
         /// <returns></returns>
         /// <exception cref="JsonInvalidTypeException"></exception>
@@ -40,9 +40,9 @@
 
         /// <summary>
         /// Parse a string to JsonNull.
-        /// <para>2024.1.4</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.4
+        /// version 1.0.0
         /// <param name="str"></param>
         /// <returns></returns>
         /// <exception cref="JsonFormatException">The string cannot be parsed.</exception>

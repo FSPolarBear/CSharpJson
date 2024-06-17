@@ -4,17 +4,17 @@ namespace JsonTest
 {
     /// <summary>
     /// 
-    /// <para>2024.3.7</para>
-    /// <para>version 1.0.2</para>
     /// </summary>
+    /// 2024.3.7
+    /// version 1.0.2
     [TestClass]
     public class JsonItemTest
     {
         /// <summary>
         /// 
-        /// <para>2024.3.7</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.7
+        /// version 1.0.2
         [TestMethod]
         public void TestCreateFromValue()
         {

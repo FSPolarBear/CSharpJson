@@ -2,9 +2,9 @@
 {
     /// <summary>
     /// Integer item of json.
-    /// <para>2024.3.21</para>
-    /// <para>version 1.0.2</para>
     /// </summary>
+    /// 2024.3.21
+    /// version 1.0.2
     public class JsonInteger : JsonItem
     {
         private long value;
@@ -15,9 +15,9 @@
 
         /// <summary>
         /// Get the value of the item in the specified type.
-        /// <para>2024.1.4</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.4
+        /// version 1.0.0
         /// <typeparam name="T">JsonItem, JsonInteger, long, int, short, decimal, double, float</typeparam>
         /// <returns></returns>
         /// <exception cref="JsonInvalidTypeException">The type is invalid.</exception>
@@ -57,17 +57,17 @@
 
         /// <summary>
         /// 
-        /// <para>2024.1.3</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.3
+        /// version 1.0.0
         /// <returns></returns>
         public override string ToString() { return value.ToString(); }
 
         /// <summary>
         /// Parse a string to JsonInteger.
-        /// <para>2024.3.21</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.21
+        /// version 1.0.2
         /// <param name="str"></param>
         /// <returns></returns>
         /// <exception cref="JsonFormatException">The string cannot be parsed.</exception>

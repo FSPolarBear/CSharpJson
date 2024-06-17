@@ -4,17 +4,17 @@ namespace JsonTest
 {
     /// <summary>
     /// 
-    /// <para>2024.3.21</para>
-    /// <para>version 1.0.2</para>
     /// </summary>
+    /// 2024.3.21
+    /// version 1.0.2
     [TestClass]
     public class JsonIntegerTest
     {
         /// <summary>
         /// 
-        /// <para>2024.1.4</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.4
+        /// version 1.0.0
         [TestMethod]
         public void TestGetValue()
         {
@@ -45,9 +45,9 @@ namespace JsonTest
 
         /// <summary>
         /// 
-        /// <para>2024.3.21</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.21
+        /// version 1.0.2
         [TestMethod]
         public void TestParse()
         {

@@ -5,9 +5,9 @@
         /// <summary>
         /// Get the actual type of nullable type. For example, int? is inputted, and int is returnd.
         /// if the input is not nullable, return the type itself.
-        /// <para>2024.1.3</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.3
+        /// version 1.0.0
         /// <param name="type"></param>
         /// <returns></returns>
         public static Type GetActualType(Type type)
@@ -23,9 +23,9 @@
 
         /// <summary>
         /// Check whether the given type is List<T>.
-        /// <para>2024.3.7</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.7
+        /// version 1.0.2
         /// <param name="type"></param>
         /// <returns></returns>
         public static bool IsList(Type type)
@@ -37,9 +37,9 @@
 
         /// <summary>
         /// Check whether the given type is Dictionary<TKey, TValue> and TKey is string or JsonString.
-        /// <para>2024.3.7</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.7
+        /// version 1.0.2
         /// <param name="type"></param>
         /// <returns></returns>
         public static bool IsDictionaryWithStringKey(Type type) 

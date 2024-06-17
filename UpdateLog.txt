@@ -1,3 +1,10 @@
+
+v1.0.3
+We added a config EnsureAscii to escape all non-ascii characters by \u in ToString() and ToFormattedString().
+We added GetByPath method to JsonArray and JsonObject.
+We added ToArray and ToList method to JsonArray, and added ToDictionary method to JsonObject.
+We added a support to create a JsonString by char and get char value from a JsonString whose length is 1.
+
 2024.3.21
 v1.0.2
 We optimized code to speed up Parse and ToString.

@@ -14,16 +14,16 @@ namespace Json
     /// Given start=1, json parser will output end=5 and return JsonString: "key"
     /// Given start=7, json parser will output end=10 and return JsonBool: true
     /// Given start=0, json parser will output end=11 and return JsonObject: {"key": true}
-    /// <para>2024.3.21</para>
-    /// <para>version 1.0.2</para>
     /// </summary>
+    /// 2024.3.21
+    /// version 1.0.2
     internal static class JsonParser
     {
         /// <summary>
         /// Tokens in object and array.
-        /// <para>2024.2.26</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.2.26
+        /// version 1.0.2
         private enum TokenType
         {
             Key,
@@ -35,9 +35,9 @@ namespace Json
 
         /// <summary>
         /// Parse a substring of a string to JsonString.
-        /// <para>2024.2.26</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.2.26
+        /// version 1.0.2
         /// <param name="str">The string.</param>
         /// <param name="start">Start position of the substring.</param>
         /// <param name="end">End position of the substring.</param>
@@ -108,9 +108,9 @@ namespace Json
 
         /// <summary>
         /// Parse a substring of a string to JsonInteger or JsonFloat.
-        /// <para>2024.3.21</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.21
+        /// version 1.0.2
         /// <param name="str">The string.</param>
         /// <param name="start">Start position of the substring.</param>
         /// <param name="end">End position of the substring.</param>
@@ -270,9 +270,9 @@ namespace Json
 
         /// <summary>
         /// Parse a substring of a string to JsonArray.
-        /// <para>2024.3.1</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.1
+        /// version 1.0.2
         /// <param name="str">The string.</param>
         /// <param name="start">Start position of the substring.</param>
         /// <param name="end">End position of the substring.</param>
@@ -324,9 +324,9 @@ namespace Json
 
         /// <summary>
         /// Parse a substring of a string to JsonObject.
-        /// <para>2024.3.1</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.1
+        /// version 1.0.2
         /// <param name="str">The string.</param>
         /// <param name="start">Start position of the substring.</param>
         /// <param name="end">End position of the substring.</param>
@@ -390,9 +390,9 @@ namespace Json
 
         /// <summary>
         /// Parse a substring of a string to JsonItem.
-        /// <para>2024.3.1</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.1
+        /// version 1.0.2
         /// <param name="str">The string.</param>
         /// <param name="start">Start position of the substring.</param>
         /// <param name="end">End position of the substring.</param>

@@ -5,17 +5,17 @@ namespace JsonTest
 {
     /// <summary>
     /// 
-    /// <para>2024.3.20</para>
-    /// <para>version 1.0.2</para>
     /// </summary>
+    /// 2024.3.20
+    /// version 1.0.2
     [TestClass]
     public class JsonParserTest
     {
         /// <summary>
         /// 
-        /// <para>2024.3.1</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.1
+        /// version 1.0.2
         [TestMethod]
         public void TestParseItem()
         {
@@ -89,9 +89,9 @@ namespace JsonTest
 
         /// <summary>
         /// 
-        /// <para>2024.3.20</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.20
+        /// version 1.0.2
         [TestMethod]
         public void TestParseNumber()
         {

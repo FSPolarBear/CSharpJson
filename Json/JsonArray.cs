@@ -5,9 +5,9 @@ namespace Json
 {
     /// <summary>
     /// Array item of json
-    /// <para>2024.3.5</para>
-    /// <para>version 1.0.2</para>
     /// </summary>
+    /// 2024.5.19
+    /// version 1.0.3
     public class JsonArray : JsonItem, IEnumerable<JsonItem>
     {
         private List<JsonItem> value;
@@ -33,9 +33,9 @@ namespace Json
 
         /// <summary>
         /// Get the value of the item in the specified type.
-        /// <para>2024.1.4</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.4
+        /// version 1.0.0
         /// <typeparam name="T">JsonItem, JsonArray, List<JsonItem>, JsonItem[]</typeparam>
         /// <returns>Value of the item.</returns>
         /// <exception cref="JsonInvalidTypeException">The type is invalid.</exception>
@@ -59,9 +59,9 @@ namespace Json
 
         /// <summary>
         /// Parse a string to JsonArray.
-        /// <para>2024.1.4</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.4
+        /// version 1.0.0
         /// <param name="str"></param>
         /// <returns></returns>
         /// <exception cref="JsonFormatException">The string cannot be parsed.</exception>
@@ -78,9 +78,9 @@ namespace Json
 
         /// <summary>
         /// Get the value in the specified type at the specified index from the JsonArray.
-        /// <para>2024.1.4</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.4
+        /// version 1.0.0
         /// <typeparam name="T"></typeparam>
         /// <param name="index"></param>
         /// <returns></returns>
@@ -93,9 +93,9 @@ namespace Json
 
         /// <summary>
         /// Get the value in the specified type at the specified index from the JsonArray. If the index is out of range or the type is invalid, return a specified default value.
-        /// <para>2024.1.4</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.4
+        /// version 1.0.0
         /// <typeparam name="T"></typeparam>
         /// <param name="index"></param>
         /// <returns>Value of the item.</returns>
@@ -113,9 +113,9 @@ namespace Json
 
         /// <summary>
         /// Convert the JsonArray to string and append it to a StringBuilder. 
-        /// <para>2024.3.7</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.7
+        /// version 1.0.2
         /// <param name="result"></param>
         /// <param name="level"></param>
         internal override void AddStringToStringBuilder(StringBuilder result)
@@ -137,9 +137,9 @@ namespace Json
 
         /// <summary>
         /// 
-        /// <para>2024.3.7</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.7
+        /// version 1.0.2
         /// <returns></returns>
         public override string ToString()
         {
@@ -150,9 +150,9 @@ namespace Json
 
         /// <summary>
         /// Convert the JsonArray to formatted string and append it to a StringBuilder. 
-        /// <para>2024.3.5</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.5
+        /// version 1.0.2
         /// <param name="result"></param>
         /// <param name="level"></param>
         internal override void AddFormattedStringToStringBuilder(StringBuilder result, int level = 0)
@@ -180,9 +180,9 @@ namespace Json
         }
         /// <summary>
         /// 
-        /// <para>2024.3.5</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.5
+        /// version 1.0.2
         public string ToFormattedString()
         {
             StringBuilder result = new StringBuilder();
@@ -193,9 +193,9 @@ namespace Json
 
         /// <summary>
         /// Add a value to the JsonArray.
-        /// <para>2024.1.11</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.11
+        /// version 1.0.0
         /// <param name="value"></param>
         /// <exception cref="JsonInvalidTypeException">The value cannot be convert to a JsonItem object.</exception>
         public void Add(object? value)
@@ -205,21 +205,114 @@ namespace Json
 
         /// <summary>
         /// Remove the item at the specified index.
-        /// <para>2024.2.8</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.2.8
+        /// version 1.0.0
         /// <param name="index"></param>
         public void RemoveAt(int index) { this.value.RemoveAt(index); }
 
         /// <summary>
         /// Insert an item into the JsonArray at the specified index.
-        /// <para>2024.3.7</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.7
+        /// version 1.0.2
         /// <param name="index"></param>
         public void Insert(int index, object? item)
         {
             this.value.Insert(index, CreateFromValue(item));
+        }
+
+        /// <summary>
+        /// Get the value by path.
+        /// </summary>
+        /// 2024.4.4
+        /// version 1.0.3
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        /// <exception cref="JsonInvalidPathException">The path is invalid.</exception>
+        /// <exception cref="JsonInvalidTypeException">The type is invalid.</exception>
+        public T GetByPath<T>(string[] path)
+        {
+            bool isSucceed = TryGetItemByPath(path, out JsonItem? item);
+            if (!isSucceed)
+                throw new JsonInvalidPathException(JsonExceptionMessage.GetInvalidPathMessage());
+            return item!.GetValue<T>();
+        }
+
+        /// <summary>
+        /// Get the value by path.
+        /// </summary>
+        /// 2024.4.4
+        /// version 1.0.3
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        /// <exception cref="JsonInvalidTypeException">The type is invalid for some elements</exception>
+        public T GetByPath<T>(string[] path, T defaultValue)
+        {
+            bool isSucceed = TryGetItemByPath(path, out JsonItem? item);
+            if (!isSucceed)
+                return defaultValue;
+            return item!.GetValue<T>(defaultValue);
+        }
+
+        /// <summary>
+        /// Get the value by path.
+        /// </summary>
+        /// 2024.6.11
+        /// version 1.0.3
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        /// <exception cref="JsonInvalidPathException">The path is invalid.</exception>
+        /// <exception cref="JsonInvalidTypeException">The type is invalid.</exception>
+        public T GetByPath<T>(string path, char splitCharacter = '.')
+        {
+            return GetByPath<T>(path.Split(splitCharacter));
+        }
+
+        /// <summary>
+        /// Get the value by path.
+        /// </summary>
+        /// 2024.6.11
+        /// version 1.0.3
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        public T GetByPath<T>(string path, T defaultValue, char splitCharacter = '.')
+        {
+            return GetByPath(path.Split(splitCharacter), defaultValue);
+        }
+
+        /// <summary>
+        /// Convert JsonArray to a list with a specified type. All the elements should be the specified type.
+        /// </summary>
+        /// 2024.5.19
+        /// version 1.0.3
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="JsonInvalidTypeException">The type is invalid for some elements</exception>
+        public List<T> ToList<T>()
+        {
+            List<T> result = new List<T>();
+            foreach(JsonItem item in this.value)
+                result.Add(item.GetValue<T>());
+            return result;
+        }
+
+        /// <summary>
+        /// Convert JsonArray to an array with a specified type. All the elements should be the specified type.
+        /// </summary>
+        /// 2024.5.19
+        /// version 1.0.3
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T[] ToArray<T>()
+        {
+            return ToList<T>().ToArray();
         }
 
         public IEnumerator<JsonItem> GetEnumerator()

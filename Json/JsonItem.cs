@@ -1,12 +1,13 @@
-﻿using System.Text;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace Json
 {
     /// <summary>
     /// Type of json item.
-    /// <para>2024.2.9</para>
-    /// <para>version 1.0.1</para>
     /// </summary>
+    /// 2024.5.9
+    /// version 1.0.3
     public enum JsonItemType
     {
         String,
@@ -20,18 +21,18 @@ namespace Json
 
     /// <summary>
     /// Item of json.
-    /// <para>2024.3.21</para>
-    /// <para>version 1.0.2</para>
     /// </summary>
+    /// 2024.4.3
+    /// version 1.0.3
     public abstract class JsonItem
     {
         public JsonItemType ItemType { get; protected set; }
 
         /// <summary>
         /// Parse a string to a json item.
-        /// <para>2024.3.21</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.21
+        /// version 1.0.2
         /// <param name="str"></param>
         /// <returns></returns>
         /// <exception cref="JsonFormatException">The string cannot be parsed.</exception>
@@ -62,9 +63,9 @@ namespace Json
 
         /// <summary>
         /// Create a JsonItem object by the specified value. If the specified value is a JsonItem, return it without create a new object.
-        /// <para>2024.3.7</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.5.19
+        /// version 1.0.3
         /// <param name="value"></param>
         /// <returns></returns>
         /// <exception cref="JsonInvalidTypeException">The value cannot be convert to a JsonItem object.</exception>
@@ -108,6 +109,10 @@ namespace Json
             else if (value is string)
             {
                 return new JsonString((string)value);
+            }
+            else if (value is char)
+            {
+                return new JsonString(((char)value));
             }
             else if (value is List<JsonItem>)
             {
@@ -156,9 +161,9 @@ namespace Json
 
         /// <summary>
         /// Get the value of the item in the specified type.
-        /// <para>2024.1.3</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.3
+        /// version 1.0.0
         /// <typeparam name="T"></typeparam>
         /// <returns>值</returns>
         /// <exception cref="JsonInvalidTypeException">The type is invalid.</exception>
@@ -166,9 +171,9 @@ namespace Json
 
         /// <summary>
         /// Get the value of the item in the specified type. If the type is invalid, return a specified default value.
-        /// <para>2024.1.3</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.3
+        /// version 1.0.0
         /// <typeparam name="T"></typeparam>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
@@ -183,9 +188,9 @@ namespace Json
 
         /// <summary>
         /// Convert the json item to string and append it to a StringBuilder. 
-        /// <para>2024.3.7</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.7
+        /// version 1.0.2
         /// <param name="result"></param>
         internal virtual void AddStringToStringBuilder(StringBuilder result)
         {
@@ -197,14 +202,58 @@ namespace Json
         /// For JsonObject and JsonArray, override this method to convert it to formatted string.
         /// JsonString is often-used in JsonObject. Therefore, for JsonString, we override this method to avoid too many string objects are generated when convert a JsonObject to string.
         /// For types except JsonObject and JsonArray, param "level" is not necessary.
-        /// <para>2024.3.7</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.7
+        /// version 1.0.2
         /// <param name="result"></param>
         /// <param name="level"></param>
         internal virtual void AddFormattedStringToStringBuilder(StringBuilder result, int level = 0)
         {
             AddStringToStringBuilder(result);
+        }
+
+        /// <summary>
+        /// Get a value by path. If succeed, the method returns true and outputs the found item.
+        /// The elements of path should be string. For JsonArray, its index should be convert to string.
+        /// For example, for json object obj = {"obj1": {"arr1": ["value0", "value1", "value2"]}},
+        /// this method will get JsonString "value0" by a path {"obj1", "arr1", "0"}.
+        /// It is the same as obj.Get<JsonObject>("obj1").Get<JsonArray>("arr1").Get<JsonItem>(0).
+        /// </summary>
+        /// 2024.4.4
+        /// version 1.0.3
+        /// <param name="separator"></param>
+        /// <param name="path"></param>
+        /// <param name="item"></param>
+        /// <returns>True if succeed</returns>
+        protected bool TryGetItemByPath(string[] path, [MaybeNullWhen(false)] out JsonItem item)
+        {
+            JsonItem now = this;
+            item = null;
+
+            foreach (string element in path)
+            {
+                if (now is JsonObject)
+                {
+                    JsonObject obj_now = (JsonObject)now;
+                    if (!obj_now.ContainsKey(element)) 
+                        return false;
+                    now = obj_now.Get<JsonItem>(element);
+                }
+                else if (now is JsonArray)
+                {
+                    JsonArray arr_now = (JsonArray)now;
+                    int int_node;
+                    if (!int.TryParse(element, out int_node))
+                        return false;
+                    if (int_node >= arr_now.Count)
+                        return false;
+                    now = arr_now.Get<JsonItem>(int_node);
+                }
+                else
+                    return false;
+            }
+            item = now;
+            return true;
         }
 
     }

@@ -2,9 +2,9 @@
 {
     /// <summary>
     /// Bool item of json.
-    /// <para>2024.1.3</para>
-    /// <para>version 1.0.0</para>
     /// </summary>
+    /// 2024.1.3
+    /// version 1.0.0
     public class JsonBool : JsonItem
     {
         private bool value;
@@ -15,9 +15,9 @@
 
         /// <summary>
         /// Get the value of the item in the specified type.
-        /// <para>2024.1.3</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.3
+        /// version 1.0.0
         /// <typeparam name="T">JsonItem、JsonInteger、bool</typeparam>
         /// <returns>Value of the item.</returns>
         /// <exception cref="JsonInvalidTypeException">The type is invalid.</exception>
@@ -38,17 +38,17 @@
 
         /// <summary>
         /// 
-        /// <para>2024.1.3</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.3
+        /// version 1.0.0
         /// <returns></returns>
         public override string ToString() { if (value) return "true"; else return "false"; }
 
         /// <summary>
         /// Parse a string to JsonBool.
-        /// <para>2024.1.3</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.3
+        /// version 1.0.0
         /// <param name="str"></param>
         /// <returns></returns>
         /// <exception cref="JsonFormatException">The string cannot be parsed.</exception>

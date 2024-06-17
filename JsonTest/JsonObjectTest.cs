@@ -4,17 +4,17 @@ namespace JsonTest
 {
     /// <summary>
     /// 
-    /// <para>2024.3.5</para>
-    /// <para>version 1.0.2</para>
     /// </summary>
+    /// 2024.3.5
+    /// version 1.0.2
     [TestClass]
     public class JsonObjectTest
     {
         /// <summary>
         /// 
-        /// <para>2024.1.11</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.11
+        /// version 1.0.0
         [TestMethod]
         public void TestParse()
         {
@@ -39,9 +39,9 @@ namespace JsonTest
         [TestMethod]
         /// <summary>
         /// 
-        /// <para>2024.3.5</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.3.5
+        /// version 1.0.2
         public void TestFormat()
         {
             string str, actual, expected;
@@ -77,9 +77,9 @@ namespace JsonTest
 
         /// <summary>
         /// Test whether obj and Parse(obj.ToString()) are equal.
-        /// <para>2024.1.11</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.11
+        /// version 1.0.0
         [TestMethod]
         public void TestToStringAndParse()
         {
@@ -92,6 +92,62 @@ namespace JsonTest
             obj2 = JsonObject.Parse(expected);
             actual = obj2.ToString();
             Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestGetByPath()
+        {
+            JsonObject obj = new JsonObject()
+            {
+                {
+                    "obj1", new JsonObject()
+                    {
+                        {
+                            "arr1", new JsonArray()
+                            {
+                                true, false, new JsonObject()
+                                {
+                                    {
+                                        "arr2",  new JsonArray()
+                                        {
+                                            null,  new JsonObject()
+                                            {
+                                                {"most_inner", "The most inner item." }
+                                            }
+                                        }
+                                    },
+                                    {"123", 456 }
+                                }
+                            }
+                        }
+                    } 
+                },
+                {"true", true }
+            };
+
+            object? value;
+            string[] path;
+
+            path = "true".Split('.');
+            value = obj.GetByPath<bool>(path);
+            Assert.AreEqual(true, value);
+
+            path = "obj1.arr1.1".Split(".");
+            value = obj.GetByPath<bool>(path);
+            Assert.AreEqual(false, value);
+
+            path = "obj1.arr1.2.123".Split(".");
+            value = obj.GetByPath<int>(path);
+            Assert.AreEqual(456, value);
+
+            path = "obj1.arr1.2.arr2.0".Split(".");
+            value = obj.GetByPath<object?>(path);
+            Assert.IsNull(value);
+
+            path = "obj1.arr1.2.arr2.1.most_inner".Split(".");
+            value = obj.GetByPath<string>(path);
+            Assert.AreEqual("The most inner item.", value);
+
         }
     }
 }

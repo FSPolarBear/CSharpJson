@@ -4,17 +4,17 @@ namespace JsonTest
 {
     /// <summary>
     /// 
-    /// <para>2024.2.26</para>
-    /// <para>version 1.0.2</para>
     /// </summary>
+    /// 2024.5.19
+    /// version 1.0.3
     [TestClass]
     public class JsonStringTest
     {
         /// <summary>
         /// 
-        /// <para>2024.2.26</para>
-        /// <para>version 1.0.2</para>
         /// </summary>
+        /// 2024.2.26
+        /// version 1.0.2
         [TestMethod]
         public void TestParse()
         {
@@ -63,9 +63,9 @@ namespace JsonTest
 
         /// <summary>
         /// 
-        /// <para>2024.1.11</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.11
+        /// version 1.0.0
         [TestMethod]
         public void TestToString()
         {
@@ -94,9 +94,9 @@ namespace JsonTest
 
         /// <summary>
         /// Test whether obj and Parse(obj.ToString()) are equal.
-        /// <para>2024.1.11</para>
-        /// <para>version 1.0.0</para>
         /// </summary>
+        /// 2024.1.11
+        /// version 1.0.0
         [TestMethod]
         public void TestToStringAndParse()
         {
@@ -120,6 +120,32 @@ namespace JsonTest
 
         }
 
+        /// <summary>
+        /// Test generating a JsonString by a char or get a char value from JsonString.
+        /// </summary>
+        /// 2024.5.19
+        /// version 1.0.3
+        [TestMethod]
+        public void TestChar()
+        {
+ 
+            JsonItem jstr1 = JsonItem.CreateFromValue('a');
+            Assert.IsTrue(jstr1 is JsonString);
+            Assert.AreEqual('a', jstr1.GetValue<char>());
+            Assert.AreEqual("a", jstr1.GetValue<string>());
+
+            JsonItem jstr2 = JsonItem.CreateFromValue("a");
+            Assert.IsTrue(jstr2 is JsonString);
+            Assert.AreEqual('a', jstr2.GetValue<char>());
+            Assert.AreEqual("a", jstr2.GetValue<string>());
+
+            JsonItem jstr3 = JsonItem.CreateFromValue("ab");
+            try
+            {
+                jstr3.GetValue<char>();
+                Assert.Fail();
+            }catch(JsonInvalidTypeException) { }
+        }
 
     }
 }
