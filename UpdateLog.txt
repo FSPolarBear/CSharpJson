@@ -1,4 +1,4 @@
-
+2024.6.17
 v1.0.3
 We added a config EnsureAscii to escape all non-ascii characters by \u in ToString() and ToFormattedString().
 We added GetByPath method to JsonArray and JsonObject.
