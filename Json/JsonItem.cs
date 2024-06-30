@@ -6,8 +6,8 @@ namespace Json
     /// <summary>
     /// Type of json item.
     /// </summary>
-    /// 2024.5.9
-    /// version 1.0.3
+    /// 2024.6.29
+    /// version 1.0.4
     public enum JsonItemType
     {
         String,
@@ -22,8 +22,8 @@ namespace Json
     /// <summary>
     /// Item of json.
     /// </summary>
-    /// 2024.4.3
-    /// version 1.0.3
+    /// 2024.6.18
+    /// version 1.0.4
     public abstract class JsonItem
     {
         public JsonItemType ItemType { get; protected set; }
@@ -64,8 +64,8 @@ namespace Json
         /// <summary>
         /// Create a JsonItem object by the specified value. If the specified value is a JsonItem, return it without create a new object.
         /// </summary>
-        /// 2024.5.19
-        /// version 1.0.3
+        /// 2024.6.29
+        /// version 1.0.4
         /// <param name="value"></param>
         /// <returns></returns>
         /// <exception cref="JsonInvalidTypeException">The value cannot be convert to a JsonItem object.</exception>
@@ -73,7 +73,7 @@ namespace Json
         {
             if (value == null)
                 return new JsonNull();
-            string exceptionMessage = JsonExceptionMessage.GetInvalidTypeExceptionMessage(new string[] { "JsonItem", "null", "bool", "string", "long", "int", "short", "decimal", "double", "float", "List<JsonItem>", "Dictionary<JsonString, JsonItem>" }, value.GetType());
+            string exceptionMessage = JsonExceptionMessage.GetInvalidTypeExceptionMessage(new string[] { "JsonItem", "null", "bool", "string", "char","long", "int", "short", "decimal", "double", "float", "List<T>", "T[]", "Dictionary<string/JsonString, T>", "IJsonObject" }, value.GetType());
             if (value is JsonItem)
             {
                 return (JsonItem)value;
@@ -154,6 +154,10 @@ namespace Json
                         throw new JsonInvalidTypeException(exceptionMessage);
                 }
                 return result;
+            }
+            else if (value is IJsonObject ijobj)
+            {
+                return new JsonObject(ijobj);
             }
             else 
                 throw new JsonInvalidTypeException(exceptionMessage);

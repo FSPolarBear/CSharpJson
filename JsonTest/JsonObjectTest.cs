@@ -5,8 +5,8 @@ namespace JsonTest
     /// <summary>
     /// 
     /// </summary>
-    /// 2024.3.5
-    /// version 1.0.2
+    /// 2024.6.26
+    /// version 1.0.4
     [TestClass]
     public class JsonObjectTest
     {
@@ -147,6 +147,27 @@ namespace JsonTest
             path = "obj1.arr1.2.arr2.1.most_inner".Split(".");
             value = obj.GetByPath<string>(path);
             Assert.AreEqual("The most inner item.", value);
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// 2024.6.26
+        /// version 1.0.4
+        [TestMethod]
+        public void TestGetDictionary()
+        {
+            JsonObject obj = new JsonObject() {
+                {"key1", "value1" },
+                {"key2", "value2" },
+                {"key3", "value3" },
+            };
+
+            Dictionary<string, string> res = obj.GetValue<Dictionary<string, string>>();
+            Assert.AreEqual("value1", res["key1"]);
+            Assert.AreEqual("value2", res["key2"]);
+            Assert.AreEqual("value3", res["key3"]);
 
         }
     }

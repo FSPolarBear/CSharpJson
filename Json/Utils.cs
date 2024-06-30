@@ -1,4 +1,6 @@
-﻿namespace Json
+﻿using System.Reflection;
+
+namespace Json
 {
     internal static class Utils
     {
@@ -50,6 +52,58 @@
                 return false;
             Type[] args = type.GetGenericArguments();
             return args[0] == typeof(string) || args[0] == typeof(JsonString);
+        }
+
+        /// <summary>
+        /// Get type T of List<T>. If the given type is not List<T>, return null.
+        /// </summary>
+        /// 2024.6.26
+        /// version 1.0.4
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static Type? GetGenericOfList(Type type)
+        {
+            if (!type.IsGenericType)
+                return null;
+            if (type.GetGenericTypeDefinition() != typeof(List<>))
+                return null;
+            return type.GetGenericArguments()[0];
+        }
+
+        /// <summary>
+        /// Get type T of Dictionary<string, T> or Dictionary<JsonString, T>. If the given type is neither Dictionary<string, T> nor Dictionary<JsonString, T>, return null.
+        /// </summary>
+        /// 2024.6.26
+        /// version 1.0.4
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static Type? GetGenericOfDictionaryWithStringKey(Type type)
+        {
+            if (!type.IsGenericType)
+                return null;
+            if (type.GetGenericTypeDefinition() != typeof(Dictionary<,>))
+                return null;
+            Type[] args = type.GetGenericArguments();
+            if (args[0] != typeof(string) && args[0] != typeof(JsonString))
+                return null;
+            return args[1];
+        }
+
+
+        /// <summary>
+        /// Run a method with generic, and the generic is a given Type value.
+        /// </summary>
+        /// 2024.6.26
+        /// version 1.0.4
+        /// <param name="obj"></param>
+        /// <param name="method"></param>
+        /// <param name="T"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public static object? RunMethodWithGeneric(object? obj, MethodInfo method, Type[] T, object?[]? args = null)
+        {
+            MethodInfo target_method = method.MakeGenericMethod(T);
+            return target_method.Invoke(obj, args);
         }
     }
 }

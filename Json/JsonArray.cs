@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Reflection;
 using System.Text;
 
 namespace Json
@@ -6,16 +7,18 @@ namespace Json
     /// <summary>
     /// Array item of json
     /// </summary>
-    /// 2024.5.19
-    /// version 1.0.3
+    /// 2024.6.29
+    /// version 1.0.4
     public class JsonArray : JsonItem, IEnumerable<JsonItem>
     {
         private List<JsonItem> value;
-        public JsonArray() {
+        public JsonArray()
+        {
             ItemType = JsonItemType.Array;
-            this.value = new List<JsonItem>() ; 
+            this.value = new List<JsonItem>();
         }
-        public JsonArray(List<JsonItem> value) {
+        public JsonArray(List<JsonItem> value)
+        {
             ItemType = JsonItemType.Array;
             this.value = value;
         }
@@ -30,12 +33,14 @@ namespace Json
         public object? this[int index] { get { return this.value[index]; } set { this.value[index] = JsonItem.CreateFromValue(value); } }
         public int Count { get { return this.value.Count; } }
 
+        private static MethodInfo methodInfo_ToList = typeof(JsonArray).GetMethod("ToList")!;
+        private static MethodInfo methodInfo_ToArray = typeof(JsonArray).GetMethod("ToArray")!;
 
         /// <summary>
         /// Get the value of the item in the specified type.
         /// </summary>
-        /// 2024.1.4
-        /// version 1.0.0
+        /// 2024.6.29
+        /// version 1.0.4
         /// <typeparam name="T">JsonItem, JsonArray, List<JsonItem>, JsonItem[]</typeparam>
         /// <returns>Value of the item.</returns>
         /// <exception cref="JsonInvalidTypeException">The type is invalid.</exception>
@@ -46,15 +51,33 @@ namespace Json
             {
                 return (T)(object)this;
             }
-            else if (type == typeof(List<JsonItem>)){
+            else if (type == typeof(List<JsonItem>))
+            {
                 return (T)(object)value;
             }
-            else if(type == typeof(JsonItem[]))
+            else if (type == typeof(JsonItem[]))
             {
                 return (T)(object)value.ToArray();
             }
+            else if (Utils.GetGenericOfList(type) is Type generic_list)
+            {
+                try
+                {
+                    return (T)Utils.RunMethodWithGeneric(this, methodInfo_ToList, new Type[] { generic_list })!;
+                }
+                catch (TargetInvocationException ex) { throw ex.InnerException!; }
+            }
+            else if (type.IsArray)
+            {
+                try
+                {
+                    return (T)Utils.RunMethodWithGeneric(this, methodInfo_ToArray, new Type[] { type.GetElementType()! })!;
+
+                }
+                catch (TargetInvocationException ex) { throw ex.InnerException!; }
+            }
             else
-                throw new JsonInvalidTypeException(JsonExceptionMessage.GetInvalidTypeExceptionMessage(new string[] { "List<JsonItem>", "JsonItem[]"}, type));
+                throw new JsonInvalidTypeException(JsonExceptionMessage.GetInvalidTypeExceptionMessage(new string[] { "List<T>", "T[]" }, type));
         }
 
         /// <summary>
@@ -157,7 +180,7 @@ namespace Json
         /// <param name="level"></param>
         internal override void AddFormattedStringToStringBuilder(StringBuilder result, int level = 0)
         {
-            string space = new string(' ', (level+1) * 4);
+            string space = new string(' ', (level + 1) * 4);
             string space_last_line = new string(' ', level * 4);
             result.Append('[');
             if (Count == 0)
@@ -168,7 +191,7 @@ namespace Json
             result.Append('\n');
             result.Append(space);
             value[0].AddFormattedStringToStringBuilder(result, level + 1);
-            for(int i = 1; i < Count; i++)
+            for (int i = 1; i < Count; i++)
             {
                 result.Append(",\n");
                 result.Append(space);
@@ -188,7 +211,7 @@ namespace Json
             StringBuilder result = new StringBuilder();
             AddFormattedStringToStringBuilder(result);
             return result.ToString();
-            
+
         }
 
         /// <summary>
@@ -298,7 +321,7 @@ namespace Json
         public List<T> ToList<T>()
         {
             List<T> result = new List<T>();
-            foreach(JsonItem item in this.value)
+            foreach (JsonItem item in this.value)
                 result.Add(item.GetValue<T>());
             return result;
         }

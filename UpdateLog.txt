@@ -1,3 +1,8 @@
+2024.6.30
+v1.0.4
+We added an interface IJsonObject. A class who implements IJsonObject and has a constructor with JsonObject argument is supported as a JsonObject.
+We added a support to get Array or List<T> value from a JsonArray and added a support to get Dictionary<string, T> value from a JsonObject.
+
 2024.6.17
 v1.0.3
 We added a config EnsureAscii to escape all non-ascii characters by \u in ToString() and ToFormattedString().

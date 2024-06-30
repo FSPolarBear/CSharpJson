@@ -1,5 +1,7 @@
 ﻿using System.Collections;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using System.Text;
 
 namespace Json
@@ -7,36 +9,60 @@ namespace Json
     /// <summary>
     /// Json object item of json.
     /// </summary>
-    /// 2024.5.19
-    /// version 1.0.3
+    /// 2024.6.29
+    /// version 1.0.4
     public class JsonObject : JsonItem, IDictionary<JsonString, JsonItem>
     {
         private Dictionary<JsonString, JsonItem> value;
-        public JsonObject() {
+        public JsonObject()
+        {
             ItemType = JsonItemType.Object;
             this.value = new Dictionary<JsonString, JsonItem>();
         }
-        public JsonObject(Dictionary<JsonString, JsonItem> value) {
+        public JsonObject(Dictionary<JsonString, JsonItem> value)
+        {
             ItemType = JsonItemType.Object;
             this.value = value;
         }
-        
+
+        public JsonObject(IDictionary value): this()
+        {
+            foreach (object? key in value.Keys)
+            {
+                JsonString _key;
+                if (key is JsonString)
+                    _key = (JsonString)key;
+                else if (key is string)
+                    _key = new JsonString((string)key);
+                else
+                    throw new JsonInvalidTypeException(JsonExceptionMessage.GetInvalidTypeExceptionKeyShouldBeStringMessage());
+                this[_key] = value[key];
+            }
+        }
+
+
+        public JsonObject(IJsonObject value) : this(value.ToJson().value) { this["__Type"] = value.GetType().FullName; }
+
         public object? this[JsonString key] { get { return this.value[key]; } set { this.value[key] = JsonItem.CreateFromValue(value); } }
         public object? this[string key] { get { return this.value[new JsonString(key)]; } set { this.value[new JsonString(key)] = JsonItem.CreateFromValue(value); } }
-        
 
 
-        public string[] Keys { get {
+
+        public string[] Keys
+        {
+            get
+            {
                 List<string> keys = new List<string>();
                 foreach (JsonString key in this.value.Keys)
                 {
                     keys.Add(key.GetValue<string>());
                 }
                 return keys.ToArray();
-            } }
+            }
+        }
         public int Count { get { return value.Count; } }
 
-
+        private static MethodInfo methodInfo_ToDictionary = typeof(JsonObject).GetMethod("ToDictionary")!;
 
         /// <summary>
         /// Return a value indicates whether the key is contained in the JsonObject.
@@ -53,8 +79,8 @@ namespace Json
         /// <summary>
         /// Get the value of the item in the specified type.
         /// </summary>
-        /// 2024.1.4
-        /// version 1.0.0
+        /// 2024.6.29
+        /// version 1.0.4
         /// <typeparam name="T">JsonItem, JsonObject, Dictionary<JsonString, JsonItem></typeparam>
         /// <returns></returns>
         /// <exception cref="JsonInvalidTypeException">The type is invalid.</exception>
@@ -69,8 +95,49 @@ namespace Json
             {
                 return (T)(object)value;
             }
+            else if (type == typeof(IJsonObject) || type.GetInterfaces().Contains(typeof(IJsonObject)))
+            {
+                string? target_type_name = Get<string>("__Type", "");
+                if (target_type_name == null)
+                    throw new JsonInvalidTypeException(JsonExceptionMessage.GetInvalidTypeExceptionNoTypeMessage());
+
+                Type? target_type = null;
+                Assembly callingAssembly = Assembly.GetCallingAssembly();
+                List<Assembly> assemblies = new List<Assembly> { callingAssembly};
+                AssemblyName[] assemblyNames = callingAssembly.GetReferencedAssemblies();
+                foreach(AssemblyName assemblyName in assemblyNames)
+                {
+                    Assembly _assembly = Assembly.Load(assemblyName);
+                    assemblies.Add(_assembly);
+                }
+                foreach(Assembly assembly in assemblies)
+                {
+                    target_type = assembly.GetType(target_type_name);
+                    if (target_type != null)
+                        break;
+                }
+                
+                if (target_type == null)
+                    throw new JsonInvalidTypeException(JsonExceptionMessage.GetInvalidTypeExceptionTypeIsInvalidMessage(target_type_name));
+                if (!target_type.IsSubclassOf(type) && !type.IsAssignableFrom(target_type))
+                    throw new JsonInvalidTypeException(JsonExceptionMessage.GetInvalidTypeExceptionTypeCannotBeConvertedMessage(type, target_type));
+
+                ConstructorInfo? constructor = target_type.GetConstructor(BindingFlags.Instance | BindingFlags.Public, new Type[] { typeof(JsonObject) });
+                if (constructor == null)
+                    throw new JsonInvalidTypeException(JsonExceptionMessage.GetInvalidTypeExceptionShouldHaveConstructorWithJsonObjectMessage(target_type));
+                T result = (T)constructor.Invoke(new object[] { GetValue<JsonObject>() });
+                return result;
+            }
+            else if (Utils.GetGenericOfDictionaryWithStringKey(type) is Type generic_dict)
+            {
+                try
+                {
+                    return (T)Utils.RunMethodWithGeneric(this, methodInfo_ToDictionary, new Type[] { generic_dict })!;
+                }
+                catch (TargetInvocationException ex) { throw ex.InnerException!; }
+            }
             else
-                throw new JsonInvalidTypeException(JsonExceptionMessage.GetInvalidTypeExceptionMessage("Dictionary<JsonString, JsonItem>", type));
+                throw new JsonInvalidTypeException(JsonExceptionMessage.GetInvalidTypeExceptionMessage(new string[] { "Dictionary<string/JsonString, T>", "IJsonObject" }, type));
         }
 
         /// <summary>
@@ -101,9 +168,10 @@ namespace Json
         /// 2024.3.7
         /// version 1.0.2
         /// <returns></returns>
-        public override string ToString() {
+        public override string ToString()
+        {
             StringBuilder result = new StringBuilder();
-            AddStringToStringBuilder (result);
+            AddStringToStringBuilder(result);
             return result.ToString();
         }
 
@@ -133,7 +201,7 @@ namespace Json
                     result.Append(',');
                 result.Append('\n');
                 first = false;
-                
+
                 result.Append(space);
                 result.Append(kv.Key.ToString());
                 result.Append(": ");
@@ -224,7 +292,7 @@ namespace Json
             {
                 return Get<T>(key);
             }
-            catch (Exception) 
+            catch (Exception)
             {
                 return defaultValue;
             }
@@ -357,7 +425,7 @@ namespace Json
         public Dictionary<string, T> ToDictionary<T>()
         {
             Dictionary<string, T> result = new Dictionary<string, T>();
-            foreach(KeyValuePair<JsonString, JsonItem> pair in this.value)
+            foreach (KeyValuePair<JsonString, JsonItem> pair in this.value)
             {
                 result.Add(pair.Key.GetValue<string>(), pair.Value.GetValue<T>());
             }
@@ -365,7 +433,7 @@ namespace Json
         }
 
 
-        // The following are the methods that are necessary in order to implement the IDictionary interface
+        #region The the methods that are necessary in order to implement the IDictionary interface
 
         ICollection<JsonString> IDictionary<JsonString, JsonItem>.Keys => this.value.Keys;
 
@@ -428,5 +496,7 @@ namespace Json
         {
             return value.GetEnumerator();
         }
+
+        #endregion
     }
 }
